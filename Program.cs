@@ -174,9 +174,9 @@
       ((Teacher)currentPerson).Broadcast(state.Chat, lexer.ReadAll());
       Printer.Infoln("Done!");
     }, usage: "Broadcast <message...>", help: "Send a message to all attached students"));
-    Command.Register(new("Rank", (_) =>
+    Command.Register(new("Rank", help: "Show students ordered by grade", exec: (_) =>
     {
-      List<Student> toRank = state.Students;
+      List<Student> toRank = state.Students.OrderBy(p => p.AvgGrade).ToList();
       int i = 0;
       foreach (var student in toRank)
       {
@@ -189,7 +189,11 @@
       if (currentPerson == null) Printer.Warnln("You are not logged in!");
       else Printer.Infoln($"You are logged as {currentPerson}");
     }, help: "Show current logged user"));
-    Command.Register(new("Logout", (_) => { }));
+    Command.Register(new("Logout", help: "Logs out of current user", exec: (_) =>
+    {
+      currentPerson = null;
+      Printer.Infoln("Done!");
+    }));
     Command.Register(new("Exit", (_) => Environment.Exit(0), help: "Exit from program"));
     Command.EnableHelp();
     Command.commands.Sort((c1, c2) => c1.name.CompareTo(c2.name));
